@@ -7,7 +7,7 @@ Detects if someone is peeking at your Snapchat messages and sends a notification
 - Install the **Snapchat Peeker** via the [Releases Page](https://github.com/DaintyDust/Snapchat-Peeker/releases).
   - Turn on developer mode via chrome://extensions
   - Select **Load unpacked** and select the unzipped version of the **Snapchat Peeker** extension
-  - When installed open the popup and choose your own topic for NTFY ![image](https://github.com/user-attachments/assets/477a4618-6b3c-4240-86d6-4389ccb48e85)
+  - When installed open the popup and choose your own topic for NTFY [image](https://github.com/user-attachments/assets/477a4618-6b3c-4240-86d6-4389ccb48e85)
     
 
 - Download the **NTFY** app on your ios/android device.
