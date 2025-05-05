@@ -44,10 +44,27 @@ console.log(`%c[LOGGER]`, "color:rgb(251, 255, 0)", "Content script loaded.");
 
   // Backup: Also inject on DOMContentLoaded
   document.addEventListener("DOMContentLoaded", injectInterceptor, {
-    once: true,
-  });
+    once: true,  });
 
-  // Listen for the custom events from the injected script
+// Declare variable to store notification topic with default value
+let notificationTopic = 'test'; // Set a default topic that will be used if no saved value exists
+
+// Try to get saved topic from storage when content script loads
+if (typeof chrome !== 'undefined' && chrome.storage) {
+    chrome.storage.sync.get(['notificationTopic'], function(result) {
+        if (result.notificationTopic) {
+            notificationTopic = result.notificationTopic;
+            console.log(`%c[LOGGER]`, "color:rgb(251, 255, 0)", "Loaded notification topic:", notificationTopic);
+        } else {
+            // If no topic is found in storage, save the default one
+            chrome.storage.sync.set({ notificationTopic: notificationTopic }, function() {
+                console.log(`%c[LOGGER]`, "color:rgb(251, 255, 0)", "Saved default notification topic:", notificationTopic);
+            });
+        }
+    });
+}
+
+// Listen for the custom events from the injected script
 // Add a variable to track the last notification time
 let lastNotificationTime = 0;
 
@@ -67,17 +84,17 @@ window.addEventListener("EXTENSION_CONSOLE_INTERCEPT", function (event) {
                     }
                     
                     // Update the last notification time
-                    lastNotificationTime = now;
-                    
-                    const Message = logData.args.slice(2)
+                    lastNotificationTime = now;                    const Message = logData.args.slice(2)
                     console.log(`%c[LOGGER]`, "color:rgb(251, 255, 0)", "INTERCEPTED [Better-Snap]:", ...Message);
-                    console.log(Message[0].replace(":", ""));
-                    console.log(Message[1]);
-                    fetch('https://ntfy.sh/snapchat', {
+                    
+                    // Ensure we have a valid topic (use default if somehow the topic is empty)
+                    const currentTopic = notificationTopic || 'test';
+                    
+                    fetch(`https://ntfy.sh/${currentTopic}`, {
                         method: 'POST',
-                        body: Message[1],
+                        body: Message[0].replace(":", ""),
                         headers: {
-                            'title': Message[0].replace(":", "").replace(/[^\x00-\xFF]/g, ''),
+                            'title': Message[1], //.replace(":", "").replace(/[^\x00-\xFF]/g, '') -- to remove emojis
                             'priority': 5,
                         }
                     })
@@ -90,7 +107,6 @@ window.addEventListener("EXTENSION_CONSOLE_INTERCEPT", function (event) {
             }
     }
 });
-
   // Listen for early logs from background script
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "EARLY_LOGS") {
@@ -98,7 +114,18 @@ window.addEventListener("EXTENSION_CONSOLE_INTERCEPT", function (event) {
         // Process early logs the same way
         const timestamp = new Date().toLocaleTimeString();
         console.log(`[${timestamp}] EARLY_LOG:`, ...logData.args);
-      });
+      });    } else if (message.type === "UPDATE_NOTIFICATION_TOPIC") {
+      // Update the notification topic when received from popup
+      notificationTopic = message.topic;
+      
+      // Save the updated topic to storage as well (for persistence across reloads)
+      if (typeof chrome !== 'undefined' && chrome.storage) {
+        chrome.storage.sync.set({ notificationTopic: notificationTopic }, function() {
+          console.log(`%c[LOGGER]`, "color:rgb(251, 255, 0)", "Saved updated notification topic:", notificationTopic);
+        });
+      }
+      
+      console.log(`%c[LOGGER]`, "color:rgb(251, 255, 0)", "Updated notification topic to:", notificationTopic);
     }
   });
 })();

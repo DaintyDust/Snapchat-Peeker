@@ -1,9 +1,17 @@
 {
   "manifest_version": 3,
   "name": "Snapchat Peeker",
-  "version": "1.0",
+  "version": "2.0",
   "description": "Detects if someone is peeking at your Snapchat messages and sends a notification to your phone.",
-  "permissions": ["scripting", "webNavigation", "tabs"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "permissions": ["scripting", "webNavigation", "tabs", "storage"],
   "host_permissions": [
     "https://web.snapchat.com/*",
     "https://*.snapchat.com/*"
