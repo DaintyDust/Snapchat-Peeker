@@ -4,6 +4,7 @@ Detects if someone is peeking at your Snapchat messages and sends a notification
 ## How to install
 
 - Install **BetterSnap** via the [Chrome Extension Store](https://chrome.google.com/webstore/detail/better-snapchat/bomphfefmmkghdkkpjdafehnmfpifook).
+  - Enable **Peeking Notification** and **Presence Loggin** in the BetterSnap Settings
 - Install the **Snapchat Peeker** via the [Releases Page](https://github.com/DaintyDust/Snapchat-Peeker/releases).
   - Turn on developer mode via chrome://extensions
   - Select **Load unpacked** and select the unzipped version of the **Snapchat Peeker** extension

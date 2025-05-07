@@ -4,6 +4,28 @@ console.log(
   "color:rgb(251, 255, 0)",
   "Background script loaded."
 );
+
+// Function to check if we have permission for a URL
+function isUrlPermitted(url) {
+  try {
+    const permittedPatterns = [
+      "https://web.snapchat.com/*",
+      "https://*.snapchat.com/*"
+    ];
+    
+    return permittedPatterns.some(pattern => {
+      // Convert the pattern to a regex
+      const regex = new RegExp(
+        "^" + pattern.replace(/\./g, "\\.").replace(/\*/g, ".*") + "$"
+      );
+      return regex.test(url);
+    });
+  } catch (err) {
+    console.error("Error checking URL permission:", err);
+    return false;
+  }
+}
+
 // Use webNavigation API to inject as early as possible
 chrome.webNavigation.onCommitted.addListener(async (details) => {
   // Skip non-standard navigations
@@ -12,6 +34,12 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
     details.url.startsWith("chrome://") ||
     details.url.startsWith("chrome-extension://")
   ) {
+    return;
+  }
+
+  // Check if the URL matches the patterns we have permission for
+  if (!isUrlPermitted(details.url)) {
+    console.log("Skipping injection - no permission for URL:", details.url);
     return;
   }
 
