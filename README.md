@@ -10,7 +10,7 @@ Detects if someone is peeking at your Snapchat messages and sends a notification
   - Select **Load unpacked** and select the unzipped version of the **Snapchat Peeker** extension
   - When installed open the popup and choose your own topic for NTFY
 
-<div align="center">
+<div align="left">
   <img width="336" height="211" src="https://github.com/user-attachments/assets/477a4618-6b3c-4240-86d6-4389ccb48e85" alt="popup">
 </div>
 
